@@ -18,11 +18,8 @@ class _SingUP_UIState extends State<SingUP_UI> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final _userNameController = TextEditingController();
-
   final _emailController = TextEditingController();
-
   final _phoneController = TextEditingController();
-
   final _passwordController = TextEditingController();
 
   var authService = AuthService();
@@ -39,19 +36,18 @@ class _SingUP_UIState extends State<SingUP_UI> {
         "email": _emailController.text,
         "password": _passwordController.text,
         "phone": _phoneController.text,
+        'remainingAmount':0,
+        'totalCredit':0,
+        'totoDebit':0,
+
+
       };
 
       await authService.createUser(data, context);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DashboardUI()),
-      );
+    
       setState(() {
         isLoader = false;
       });
-      // ScaffoldMessenger.of(_formKey.currentContext!).showSnackBar(
-      //   const SnackBar(content: Text("Form submited succressfully")),
-      // );
     }
   }
 
@@ -61,49 +57,44 @@ class _SingUP_UIState extends State<SingUP_UI> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0XFF252634),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
             key: _formKey,
             child: Column(
               children: [
-                SizedBox(
-                  height: 80.00,
-                ),
+                SizedBox(height: 80.00),
                 SizedBox(
                   width: 150.00,
                   child: Text(
                     "Create New Account",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28.00,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 28.00,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                SizedBox(
-                  height: 50.00,
-                ),
+                SizedBox(height: 50.00),
                 TextFormField(
-                    controller: _userNameController,
-                    style: TextStyle(color: Colors.white),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: _bulidInputDecoration("Username", Icons.person),
-                    validator: appValidator.validateUsename),
-                SizedBox(
-                  height: 16.00,
+                  controller: _userNameController,
+                  style: TextStyle(color: Colors.white),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: _bulidInputDecoration("Username", Icons.person),
+                  validator: appValidator.validateUsename,
                 ),
+                SizedBox(height: 16.00),
                 TextFormField(
-                    controller: _emailController,
-                    style: TextStyle(color: Colors.white),
-                    keyboardType: TextInputType.emailAddress,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration:
-                        _bulidInputDecoration("Email", Icons.email_outlined),
-                    validator: appValidator.validateEmail),
-                SizedBox(
-                  height: 16.00,
+                  controller: _emailController,
+                  style: TextStyle(color: Colors.white),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: _bulidInputDecoration("Email", Icons.email_outlined),
+                  validator: appValidator.validateEmail,
                 ),
+                SizedBox(height: 16.00),
                 TextFormField(
                   controller: _phoneController,
                   style: TextStyle(color: Colors.white),
@@ -112,68 +103,78 @@ class _SingUP_UIState extends State<SingUP_UI> {
                   decoration: _bulidInputDecoration("Phone Number", Icons.call),
                   validator: appValidator.validatePhoneNumber,
                 ),
-                SizedBox(
-                  height: 16.00,
-                ),
+                SizedBox(height: 16.00),
                 TextFormField(
                   controller: _passwordController,
                   style: TextStyle(color: Colors.white),
                   keyboardType: TextInputType.visiblePassword,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  obscureText: true ,
                   decoration: _bulidInputDecoration("Password", Icons.lock),
                   validator: appValidator.validatePassword,
                 ),
+                SizedBox(height: 40.00),
                 SizedBox(
-                  height: 40.00,
-                ),
-                SizedBox(
-                    height: 50.00,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.yellow),
-                        onPressed: () {
-                          isLoader ? print("Loading") : _submitForm();
-                        },
-                        child: isLoader
-                            ? Center(child: CircularProgressIndicator())
-                            : Text("Create",
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 3, 3, 3),
-                                    fontSize: 20.00)))),
-                SizedBox(
-                  height: 20.00,
-                ),
-                TextButton(
+                  height: 50.00,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.yellow,
+                    ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                      );
+                      isLoader ? print("Loading") : _submitForm();
                     },
-                    child: Text("Login",
-                        style:
-                            TextStyle(color: Colors.yellow, fontSize: 25.00))),
+                    child: isLoader
+                        ? Center(child: CircularProgressIndicator())
+                        : Text(
+                            "Create",
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 3, 3, 3),
+                              fontSize: 20.00,
+                            ),
+                          ),
+                  ),
+                ),
+                SizedBox(height: 20.00),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: Text(
+                    "Login",
+                    style: TextStyle(color: Colors.yellow, fontSize: 25.00),
+                  ),
+                ),
               ],
-            )),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   InputDecoration _bulidInputDecoration(String label, IconData suffixIcon) {
     return InputDecoration(
-        fillColor: Color(0XFF94A59),
-        enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0x35949494))),
-        focusedBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        filled: true,
-        labelStyle: TextStyle(color: Color(0XFF949494)),
-        labelText: label,
-        suffixIcon: Icon(
-          suffixIcon,
-          color: Color(0XFF949494),
-        ),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.00)));
+      fillColor: Color(0XFF94A59),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0x35949494)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white),
+      ),
+      filled: true,
+      labelStyle: TextStyle(color: Color(0XFF949494)),
+      labelText: label,
+      suffixIcon: Icon(
+        suffixIcon,
+        color: Color(0XFF949494),
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.00),
+      ),
+    );
   }
 }

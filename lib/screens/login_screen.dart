@@ -90,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _passwordController,
                   style: TextStyle(color: Colors.white),
                   keyboardType: TextInputType.visiblePassword,
+                  obscureText: true ,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   decoration: _bulidInputDecoration("Password", Icons.lock),
                   validator: appValidator.validatePassword,
